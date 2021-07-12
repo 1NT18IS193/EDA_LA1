@@ -1,0 +1,164 @@
+EDA LA1
+
+INCHARA GUJJAR(1NT18IS193)
+GARVIT TANWAR(1NT18IS060)
+
+#package installing
+install.packages("tidyverse")
+library(tidyverse)
+
+install.packages("caret")
+library(caret)
+
+install.packages("RCurl")
+library(RCurl)
+
+install.packages("skimr")
+library(skimr)
+
+
+#importing .csv into global enviroment
+data <- read.csv("player_stats.csv")
+
+
+#data preprocessing
+str(data)
+head(data)
+view(data)
+
+
+#dimenstion of dataset
+dim(data)
+
+
+#list the datatype of each attribute
+sapply(data,class)
+
+
+#check wheather there is null value
+sum(is.na(data))
+
+
+#sumarize
+summary(data)
+
+
+#displaying detailed summary statistics
+skim(data)
+
+
+#group data by index
+data %>%
+  dplyr::group_by(Maps)%>%
+  skim()
+
+
+#create validation set
+validation <- createDataPartition(data$Maps,p=0.50,list=FALSE)
+validation50 <-data[-validation,]
+
+
+data<-data[validation,]
+view(data)
+
+#input and output
+x<-data[,3:8]
+view(x)
+y<-data[,9]
+view(y)
+
+
+#plots
+boxplot(x[,3],main=names(data)[3],ylab="Maps")
+boxplot(x[,3],main=names(data)[3],ylab="Country")
+
+
+#for all attribute
+par (mfrow=c(1,1))
+for(i in 1:1)
+{
+  boxplot(x[,i],main=names(data)[i])
+}
+
+library(caret)
+plot(x)
+
+
+#scatter plot
+library(caret)
+featurePlot(x=x,y=y)
+
+
+install.packages("ellipse")
+library(ellipse)
+library(caret)
+featurePlot(x=x,y=y,plot ="ellipse")
+
+#box plots
+library(caret)
+featurePlot(x=x,y=y,plot="box")
+
+
+#density plot
+scales<-list(x=list(relation="free"),y=list(relation="free"))
+
+
+scales<-list(x=list(relation="free"),y=list(relation="free"))
+featurePlot(x=x,y=y,plot = "density",scales=scales)
+
+#barplot
+counts<-table(data$Maps)
+barplot(counts)
+barplot(counts,horiz=TRUE)
+barplot(counts,main="Barplot",xlab="open",legend=rownames(counts),col=c("red","yellow","green"))
+
+
+#boxplot
+bwplot(~Maps,data=data,main="boxplots")
+library("caret")
+
+
+#High
+bwplot(~Maps|Country,data=data,main="boxplots")
+
+
+#histogram
+install.packages("lattice")
+library(lattice)
+histogram(~Maps,data = data,main="histogram")
+histogram(~KD,data = data,main="histogram")
+
+
+#scatter
+xyplot(Maps~KD,data=data,main="Scatterplot")
+
+
+#barchart
+barchart(~Maps,data=data,main="Barchart")
+barchart(~KD,data=data,main="Barchart")
+
+
+#densityplot
+densityplot(~Maps,data=data)
+densityplot(~KD,data=data)
+
+
+#piechart
+install.packages("plotrix")
+library(plotrix)
+slices<-c("Maps")
+lbls<-c("KD")
+pie(slices,labels=lbls,main="Piecharts")
+
+
+#ggplot
+library(ggplot2)
+library(grid)
+library(gridExtra)
+(plot1<-ggplot(data=data,mapping=aes(x=Maps,y=KD))+geom_boxplot())
+ggplot(data=data,mapping=aes(x=Maps,y=KD))+geom_boxplot(notch = TRUE,outlier.colour = "green",outlier.size = 3)
+
+
+#modify
+ggplot(data=data,mapping=aes(x=Maps,y=Maps,colour=KD))+geom_point()+facet_grid(~Maps)
+
